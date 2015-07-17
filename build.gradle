@@ -1,0 +1,42 @@
+apply plugin: 'application'
+apply plugin: 'osgi'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+sourceCompatibility = '1.7'
+version = '0.1'
+
+
+repositories {
+    maven {
+        url "http://repo.dotcms.com/artifactory/libs-release"
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'src/main/resources/libs', include: '*.jar')
+    compile (group: 'com.dotcms', name: 'dotcms', version: '3.2.3'){
+        transitive = true
+    }
+    providedCompile "javax.servlet:servlet-api:2.5"
+    
+}
+
+jar {
+    manifest {
+        name = 'PHP Scripting Support (OSGi)'
+        instruction 'Bundle-Vendor', 'dotcms'
+        instruction 'Bundle-Description', 'dotCMS - PHP Scripting support (OSGi)'
+        instruction 'Bundle-DocURL', 'http://www.dotcms.com'
+        instruction 'Bundle-Activator', 'com.dotmarketing.osgi.scripting.php.Activator'
+        instruction 'DynamicImport-Package', '*'
+        instruction 'Bundle-ClassPath', '.,libs/bsf.jar,libs/resin.jar'
+        instruction 'Import-Package', 'org.apache.bsf,org.apache.bsf.util,com.caucho.vfs,com.dotmarketing.osgi;version=0'
+        instruction 'Export-Package', 'org.apache.bsf.util,org.apache.bsf,com.caucho.vfs,com.dotmarketing.osgi.scripting.php,com.dotmarketing.osgi.scripting.php.engine,*;version=0'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}
+
